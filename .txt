@@ -1,0 +1,30 @@
+// Switch to schoolDB (creates if not exists)
+use schoolDB
+
+// Create 'students' collection
+db.createCollection("students")
+db.students.insertMany([
+  { name: "Arun", rollNo: 101, department: "CSE", marks: 85 },
+  { name: "Meena", rollNo: 102, department: "ECE", marks: 78 },
+  { name: "Ravi", rollNo: 103, department: "CSE", marks: 92 },
+  { name: "Sita", rollNo: 104, department: "ECE", marks: 88 },
+  { name: "Karthik", rollNo: 105, department: "IT", marks: 76 }
+])
+db.students.find().pretty()
+db.students.find({ marks: { $gt: 80 } }).pretty()
+db.students.find({ department: "CSE" }).pretty()
+db.students.updateOne(
+  { name: "Arun" },
+  { $set: { marks: 90 } }
+)
+db.students.updateOne(
+  { name: "Meena" },
+  { $set: { department: "IT" } }
+)
+db.students.deleteOne({ rollNo: 105 })
+db.students.aggregate([
+  { $group: { _id: "$department", avgMarks: { $avg: "$marks" } } }
+])
+db.students.aggregate([
+  { $group: { _id: "$department", totalStudents: { $sum: 1 } } }
+])
